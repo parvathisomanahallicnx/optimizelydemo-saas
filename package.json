@@ -9,6 +9,7 @@
   ],
   "devDependencies": {
     "@graphql-typed-document-node/core": "^3.2.0",
+    "@remkoj/optimizely-cms-cli": "^5.1.5",
     "@remkoj/optimizely-graph-client": "^5.1.5",
     "@remkoj/optimizely-graph-functions": "^5.1.5",
     "@types/source-map-support": "^0.5.10",
