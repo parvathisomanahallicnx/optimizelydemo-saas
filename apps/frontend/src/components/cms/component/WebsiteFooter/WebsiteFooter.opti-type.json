@@ -1,0 +1,104 @@
+{
+  "key": "WebsiteFooter",
+  "displayName": "Website footer configuration",
+  "description": "Manage the contents shown in the website footer",
+  "baseType": "component",
+  "sortOrder": 100,
+  "mayContainTypes": [],
+  "mediaFileExtensions": [],
+  "compositionBehaviors": [],
+  "properties": {
+    "FooterMainOfficeLocation": {
+      "type": "array",
+      "displayName": "Main Office Location",
+      "description": "",
+      "localized": false,
+      "required": false,
+      "group": "Information",
+      "sortOrder": 10,
+      "editorSettings": {},
+      "minItems": 0,
+      "maxItems": 1,
+      "items": {
+        "type": "content",
+        "allowedTypes": [
+          "OfficeLocation"
+        ],
+        "restrictedTypes": []
+      }
+    },
+    "FooterFirstLinkList": {
+      "type": "component",
+      "contentType": "NavigationMenuBlock",
+      "displayName": "First Menu",
+      "description": "",
+      "localized": false,
+      "required": false,
+      "group": "Information",
+      "sortOrder": 20,
+      "editorSettings": {}
+    },
+    "FooterSecondLinkList": {
+      "type": "component",
+      "contentType": "NavigationMenuBlock",
+      "displayName": "Second Menu",
+      "description": "",
+      "localized": false,
+      "required": false,
+      "group": "Information",
+      "sortOrder": 30,
+      "editorSettings": {}
+    },
+    "FooterThirdLinkList": {
+      "type": "component",
+      "contentType": "NavigationMenuBlock",
+      "displayName": "Third Menu",
+      "description": "",
+      "localized": false,
+      "required": false,
+      "group": "Information",
+      "sortOrder": 40,
+      "editorSettings": {}
+    },
+    "FooterLogo": {
+      "type": "contentReference",
+      "displayName": "Logo",
+      "description": "",
+      "localized": false,
+      "required": false,
+      "group": "Information",
+      "sortOrder": 50,
+      "editorSettings": {},
+      "allowedTypes": [
+        "Image"
+      ],
+      "restrictedTypes": []
+    },
+    "FooterLogoAltText": {
+      "type": "string",
+      "format": "shortString",
+      "displayName": "Logo alternative text",
+      "description": "",
+      "localized": true,
+      "required": false,
+      "group": "Information",
+      "sortOrder": 60,
+      "editorSettings": {}
+    },
+    "FooterLegalLinks": {
+      "type": "array",
+      "format": "LinkCollection",
+      "displayName": "Legal links",
+      "description": "",
+      "localized": false,
+      "required": false,
+      "group": "Information",
+      "sortOrder": 70,
+      "editorSettings": {},
+      "items": {
+        "type": "component",
+        "contentType": "link"
+      }
+    }
+  }
+}

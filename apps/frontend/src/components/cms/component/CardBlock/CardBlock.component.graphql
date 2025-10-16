@@ -1,0 +1,10 @@
+fragment CardBlockData on CardBlock {
+  CardHeading
+  CardSubheading
+  CardDescription { json, html }
+  CardColor
+  CardButton { ...ButtonBlockPropertyData }
+  CardIcon { ...ReferenceData }
+  CardImage { ...ReferenceData }
+  CardImageLayout
+}

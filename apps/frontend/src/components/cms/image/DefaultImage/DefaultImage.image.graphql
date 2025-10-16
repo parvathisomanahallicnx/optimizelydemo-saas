@@ -1,0 +1,3 @@
+fragment DefaultImageData on DefaultImage {
+  empty: _metadata { key }
+}

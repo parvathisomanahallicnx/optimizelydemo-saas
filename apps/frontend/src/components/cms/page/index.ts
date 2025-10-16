@@ -3,6 +3,8 @@
 import { type ComponentTypeDictionary } from "@remkoj/optimizely-cms-react";
 import LandingPageComponent from "./LandingPage";
 import BlogPostPageComponent from "./BlogPostPage";
+import ArticlePageComponent from "./ArticlePage";
+import ArticleGroupPageComponent from "./ArticleGroupPage";
 
 // Build dictionary
 export const PageFactory : ComponentTypeDictionary = [
@@ -13,6 +15,14 @@ export const PageFactory : ComponentTypeDictionary = [
     { 
         type: "BlogPostPage", 
         component: BlogPostPageComponent 
+    },
+    { 
+        type: "ArticlePage", 
+        component: ArticlePageComponent 
+    },
+    { 
+        type: "ArticleGroupPage", 
+        component: ArticleGroupPageComponent 
     }
 ];
 

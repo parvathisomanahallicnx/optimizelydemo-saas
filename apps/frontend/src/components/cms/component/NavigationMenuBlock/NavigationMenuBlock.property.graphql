@@ -1,0 +1,4 @@
+fragment NavigationMenuBlockPropertyData on NavigationMenuBlockProperty {
+  MenuNavigationHeading
+  NavigationLinks { ...LinkItemData }
+}

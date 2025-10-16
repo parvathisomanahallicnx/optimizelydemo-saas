@@ -1,0 +1,10 @@
+fragment OfficeLocationData on OfficeLocation {
+  OfficeTitle
+  OfficeAddressStreet1
+  OfficeAddressStreet2
+  OfficeAddressCity
+  OfficeAddressPostalCode
+  OfficeAddressCountry
+  OfficePhone
+  OfficeEmail
+}

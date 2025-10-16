@@ -1,0 +1,4 @@
+fragment DictionaryItemData on DictionaryItem {
+  DictionaryItemKey
+  DictionaryItemValue
+}

@@ -1,6 +1,7 @@
 // Auto generated dictionary
 // @not-modified => When this line is removed, the "force" parameter of the CLI tool is required to overwrite this file
 import { type ComponentTypeDictionary } from "@remkoj/optimizely-cms-react";
+import WebsiteFooterComponent from "./WebsiteFooter";
 import VideoElementComponent from "./VideoElement";
 import TextBlockComponent from "./TextBlock";
 import TestimonialElementComponent from "./TestimonialElement";
@@ -8,7 +9,9 @@ import RichTextElementComponent from "./RichTextElement";
 import QuoteBlockComponent from "./QuoteBlock";
 import ParagraphElementComponent from "./ParagraphElement";
 import PageSeoSettingsComponent from "./PageSeoSettings";
+import OfficeLocationComponent from "./OfficeLocation";
 import OdpEmbedBlockComponent from "./OdpEmbedBlock";
+import NavigationMenuBlockComponent from "./NavigationMenuBlock";
 import MenuNavigationBlockComponent from "./MenuNavigationBlock";
 import MegaMenuGroupBlockMobileComponent from "./MegaMenuGroupBlock/mobile";
 import MegaMenuGroupBlockComponent from "./MegaMenuGroupBlock";
@@ -16,11 +19,16 @@ import LayoutSettingsBlockComponent from "./LayoutSettingsBlock";
 import ImageElementComponent from "./ImageElement";
 import HeroBlockComponent from "./HeroBlock";
 import HeadingElementComponent from "./HeadingElement";
+import HeaderBlockComponent from "./HeaderBlock";
+import DictionaryItemComponent from "./DictionaryItem";
+import DictionaryComponent from "./Dictionary";
+import CTAElementComponent from "./CTAElement";
 import ContinueReadingComponentComponent from "./ContinueReadingComponent";
 import ContentRecsElementComponent from "./ContentRecsElement";
 import CarouselBlockComponent from "./CarouselBlock";
-import CTAElementComponent from "./CTAElement";
+import CardBlockComponent from "./CardBlock";
 import ButtonBlockComponent from "./ButtonBlock";
+import BannerBlockComponent from "./BannerBlock";
 import ArticleListElementComponent from "./ArticleListElement";
 import ArticleListElementLoader from "./ArticleListElement/loading";
 import ComponentPageFactory from "./Page";
@@ -30,6 +38,10 @@ prefixDictionaryEntries(ComponentPageFactory, "Page");
 
 // Build dictionary
 export const ComponentFactory : ComponentTypeDictionary = [
+    { 
+        type: "WebsiteFooter", 
+        component: WebsiteFooterComponent 
+    },
     { 
         type: "VideoElement", 
         component: VideoElementComponent 
@@ -59,8 +71,16 @@ export const ComponentFactory : ComponentTypeDictionary = [
         component: PageSeoSettingsComponent 
     },
     { 
+        type: "OfficeLocation", 
+        component: OfficeLocationComponent 
+    },
+    { 
         type: "OdpEmbedBlock", 
         component: OdpEmbedBlockComponent 
+    },
+    { 
+        type: "NavigationMenuBlock", 
+        component: NavigationMenuBlockComponent 
     },
     { 
         type: "MenuNavigationBlock", 
@@ -91,6 +111,22 @@ export const ComponentFactory : ComponentTypeDictionary = [
         component: HeadingElementComponent 
     },
     { 
+        type: "HeaderBlock", 
+        component: HeaderBlockComponent 
+    },
+    { 
+        type: "DictionaryItem", 
+        component: DictionaryItemComponent 
+    },
+    { 
+        type: "Dictionary", 
+        component: DictionaryComponent 
+    },
+    { 
+        type: "CTAElement", 
+        component: CTAElementComponent 
+    },
+    { 
         type: "ContinueReadingComponent", 
         component: ContinueReadingComponentComponent 
     },
@@ -103,12 +139,16 @@ export const ComponentFactory : ComponentTypeDictionary = [
         component: CarouselBlockComponent 
     },
     { 
-        type: "CTAElement", 
-        component: CTAElementComponent 
+        type: "CardBlock", 
+        component: CardBlockComponent 
     },
     { 
         type: "ButtonBlock", 
         component: ButtonBlockComponent 
+    },
+    { 
+        type: "BannerBlock", 
+        component: BannerBlockComponent 
     },
     { 
         type: "ArticleListElement", 

@@ -1,0 +1,3 @@
+fragment ImageData on Image {
+  empty: _metadata { key }
+}
