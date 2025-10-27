@@ -24,15 +24,11 @@ export const CnxHeroBannerComponent: CmsComponent<CnxHeroBannerDataFragment> = (
 
         <section className="relative w-full h-[500px] flex items-center justify-start overflow-hidden">
 
-            <img
-
+            {data.Image && data.Image.imageLink?.url?.default && <img
                 src={data.Image.imageLink.url.default}
-
                 alt={data.Image.altText}
-
                 className="absolute inset-0 w-full h-full object-cover"
-
-            />
+            />}
 
 
 
