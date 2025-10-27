@@ -1,0 +1,6 @@
+fragment CnxHeroBannerData on CnxHeroBanner {
+  Title
+  Description
+  Image { ...ImageElementPropertyData }
+  Cta { ...CTAElementPropertyData }
+}

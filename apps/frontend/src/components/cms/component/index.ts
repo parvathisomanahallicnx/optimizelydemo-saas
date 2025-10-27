@@ -25,6 +25,7 @@ import DictionaryComponent from "./Dictionary";
 import CTAElementComponent from "./CTAElement";
 import ContinueReadingComponentComponent from "./ContinueReadingComponent";
 import ContentRecsElementComponent from "./ContentRecsElement";
+import CnxHeroBannerComponent from "./CnxHeroBanner";
 import CarouselBlockComponent from "./CarouselBlock";
 import CardBlockComponent from "./CardBlock";
 import ButtonBlockComponent from "./ButtonBlock";
@@ -133,6 +134,10 @@ export const ComponentFactory : ComponentTypeDictionary = [
     { 
         type: "ContentRecsElement", 
         component: ContentRecsElementComponent 
+    },
+{ 
+        type: "CnxHeroBanner", 
+        component: CnxHeroBannerComponent 
     },
     { 
         type: "CarouselBlock", 
