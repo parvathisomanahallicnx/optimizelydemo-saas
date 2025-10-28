@@ -2,6 +2,11 @@ import { CnxHeroBannerDataFragmentDoc, type CnxHeroBannerDataFragment } from "@/
 
 import { CmsEditable, type CmsComponent } from "@remkoj/optimizely-cms-react/rsc";
 
+import { getCtaData, getImageAlt, getImageUrl } from "@/lib/optiContentHelpers";
+
+
+
+
 
 
 /**
@@ -15,8 +20,9 @@ import { CmsEditable, type CmsComponent } from "@remkoj/optimizely-cms-react/rsc
 export const CnxHeroBannerComponent: CmsComponent<CnxHeroBannerDataFragment> = ({ data, editProps, ctx }) => {
 
     const componentName = 'CnxHeroBanner'
-
-    const componentInfo = ''
+    const imageUrl = getImageUrl(data.Image);
+    const imageAlt = getImageAlt(data.Image);
+    const { text: ctaText, url: ctaUrl } = getCtaData(data.Cta);
 
     return <CmsEditable className="w-full py-2 mb-4" {...editProps}>
 
@@ -24,9 +30,9 @@ export const CnxHeroBannerComponent: CmsComponent<CnxHeroBannerDataFragment> = (
 
         <section className="relative w-full h-[500px] flex items-center justify-start overflow-hidden">
 
-            {data.Image && data.Image.imageLink?.url?.default && <img
-                src={data.Image.imageLink.url.default}
-                alt={data.Image.altText}
+            {imageUrl && <img
+                src={imageUrl}
+                alt={imageAlt}
                 className="absolute inset-0 w-full h-full object-cover"
             />}
 
@@ -54,11 +60,13 @@ export const CnxHeroBannerComponent: CmsComponent<CnxHeroBannerDataFragment> = (
 
                 </p>
 
-                <button className="px-4 py-2 rounded-lg bg-azure text-white text-sm hover:bg-gray-800 transition">
-
-                    {data.Cta.Text}
-
-                </button>
+                {ctaText && (
+                    <a href={ctaUrl}>
+                        <button className="px-4 py-2 rounded-lg bg-azure text-white text-sm hover:bg-gray-800 transition">
+                            {ctaText}
+                        </button>
+                    </a>
+                )}
 
             </div>
 
