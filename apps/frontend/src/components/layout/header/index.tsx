@@ -27,6 +27,18 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
         queryCache: true
     });
 
+    // DEBUG: log siteInfo and resolved domain so we can verify multisite mapping
+    try {
+        // server-side only — safe to log
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [Header] client.siteInfo:', JSON.stringify(currentClient?.siteInfo ?? currentClient?.config?.siteInfo ?? currentClient, null, 2))
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [Header] resolved currentDomain:', currentDomain)
+    } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('DEBUG [Header] failed to log siteInfo', e)
+    }
+
     const headerData = await getSdk(currentClient).getHeaderData({
         locale: currentLocale,
         domain: currentDomain
