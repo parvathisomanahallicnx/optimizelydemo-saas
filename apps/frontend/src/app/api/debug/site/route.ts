@@ -18,7 +18,7 @@ export async function GET(req: Request) {
 
     const sdk = getSdk(client)
     const header = await sdk.getHeaderData({ domain: frontendDomain ?? hostHeader })
-    const appIdentifiers = header?.appLayout?.items?.map(i => i.appIdentifiers) ?? null
+  const appIdentifiers = header?.appLayout?.items?.map(i => i?.appIdentifiers ?? null) ?? null
 
     return NextResponse.json({ hostHeader, frontendDomain, appIdentifiers })
   } catch (err) {
