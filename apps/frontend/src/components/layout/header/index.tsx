@@ -31,9 +31,14 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
     try {
         // server-side only — safe to log
     // eslint-disable-next-line no-console
-    console.log('DEBUG [Header] client.siteInfo:', JSON.stringify(((currentClient as any)?.siteInfo ?? (currentClient as any)), null, 2))
+    console.log('DEBUG [Header] client.siteInfo:', JSON.stringify((currentClient as any)?.siteInfo ?? (currentClient as any), null, 2))
         // eslint-disable-next-line no-console
         console.log('DEBUG [Header] resolved currentDomain:', currentDomain)
+
+        // DEBUG: log the variables we'll pass to getHeaderData so we can verify what the Graph call will receive
+        const headerQueryVars = { locale: currentLocale, domain: currentDomain }
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [Header] getHeaderData variables:', JSON.stringify(headerQueryVars))
     } catch (e) {
         // eslint-disable-next-line no-console
         console.error('DEBUG [Header] failed to log siteInfo', e)
