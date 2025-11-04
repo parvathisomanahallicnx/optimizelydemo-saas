@@ -47,13 +47,24 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
         console.error('DEBUG [Header] failed to log siteInfo', e)
     }
 
-    const headerData = await getSdk(currentClient).getHeaderData({
+    const headerResult = await getSdk(currentClient).getHeaderData({
         locale: currentLocale,
         domain: currentDomain
-    }).then(x => x.appLayout?.items?.at(0)).catch((e: { response: { code: string, status: number, system: { message: string, auth: string} }}) => {
+    }).catch((e: { response: { code: string, status: number, system: { message: string, auth: string} }}) => {
         console.error(`❌ [Optimizely Graph] [Error] ${e.response.code} ${e.response.system.message} ${e.response.system.auth}`)
         return undefined
     })
+
+    // items may include a global (no appIdentifiers) item and site-specific items.
+    // Prefer an item whose appIdentifiers explicitly match the current domain.
+    const headerItems = headerResult?.appLayout?.items ?? []
+    const findMatches = (item: any) => {
+        const ids = item?.appIdentifiers
+        if (!ids) return false
+        if (Array.isArray(ids)) return ids.includes(currentDomain)
+        return ids === currentDomain
+    }
+    const headerData = headerItems.find(findMatches) ?? headerItems.at(0)
 
     return <header>
         <div className="container mx-auto px-4 lg:px-6 py-4 gap-2 flex flex-row justify-between items-stretch lg:flex-wrap 2xl:flex-nowrap">

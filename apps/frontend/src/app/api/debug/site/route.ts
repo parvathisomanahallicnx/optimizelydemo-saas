@@ -18,7 +18,19 @@ export async function GET(req: Request) {
 
     const sdk = getSdk(client)
     const header = await sdk.getHeaderData({ domain: frontendDomain ?? hostHeader })
-  const appIdentifiers = header?.appLayout?.items?.map(i => i?.appIdentifiers ?? null) ?? null
+    const appIdentifiers = header?.appLayout?.items?.map(i => i?.appIdentifiers ?? null) ?? null
+
+    // if a path query param is provided, call getContentByPath to return items and their _metadata.url
+    const url = new URL(req.url)
+    const pathParam = url.searchParams.get('path')
+    if (pathParam) {
+      // normalize path into array as expected by getContentByPath
+      const paths = [pathParam.startsWith('/') ? pathParam : `/${pathParam}`]
+      const content = await sdk.getContentByPath({ path: paths, siteId: frontendDomain ?? hostHeader })
+  const items = content?.content?.items ?? []
+  const metadata = Array.isArray(items) ? items.map((it: any) => ({ key: it?._metadata?.key ?? null, displayName: it?._metadata?.displayName ?? null, url: it?._metadata?.url ?? null })) : []
+      return NextResponse.json({ hostHeader, frontendDomain, appIdentifiers, path: paths, items: metadata })
+    }
 
     return NextResponse.json({ hostHeader, frontendDomain, appIdentifiers })
   } catch (err) {
