@@ -6,7 +6,6 @@ import { Body, ThemeProvider } from "@/components/theme"
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { factory } from '@/components/factory';
-import { headers } from 'next/headers';
 import { createClient } from '@remkoj/optimizely-graph-client';
 
 // Server side components
@@ -69,24 +68,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     queryCache: true,
   });
   const ctx = new ServerContext({ locale, factory, client })
-  // DEBUG: log environment domain and client siteInfo so we can verify what host is being used
-  try {
-    // request headers (server-side)
-    const host = headers().get('host');
-    const xfh = headers().get('x-forwarded-host');
-    // eslint-disable-next-line no-console
-    console.log('DEBUG [RootLayout] request host:', host, 'x-forwarded-host:', xfh);
-    // eslint-disable-next-line no-console
-    console.log('DEBUG [RootLayout] NEXT_PUBLIC_SITE_DOMAIN:', (globalThis as any).process?.env?.NEXT_PUBLIC_SITE_DOMAIN)
-    // eslint-disable-next-line no-console
-    console.log('DEBUG [RootLayout] VERCEL_PROJECT_PRODUCTION_URL:', (globalThis as any).process?.env?.VERCEL_PROJECT_PRODUCTION_URL)
-    // Cast to any for debug-only access
-    // eslint-disable-next-line no-console
-    console.log('DEBUG [RootLayout] client.siteInfo:', JSON.stringify((client as any)?.siteInfo ?? null, null, 2))
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error('DEBUG [RootLayout] failed to log site info', e)
-  }
+  // no server-side debug logging in layout
 
   // Allow environment control over whether the WX snippet can be changed by the client
   const forceDisableOverride = EnvTools.readValueAsBoolean("DISABLE_WX_SWITCHER", false);
