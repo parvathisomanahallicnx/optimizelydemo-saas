@@ -26,13 +26,14 @@ export async function GET(req: Request) {
     if (pathParam) {
       // normalize path into array as expected by getContentByPath
       const paths = [pathParam.startsWith('/') ? pathParam : `/${pathParam}`]
-      // allow overriding the site id via query param for testing
-      const siteIdOverride = url.searchParams.get('siteId')
-      const siteIdToUse = siteIdOverride ?? frontendDomain ?? hostHeader
-      const content = await sdk.getContentByPath({ path: paths, siteId: siteIdToUse })
+  // allow overriding the site id via query param for testing
+  const siteIdOverride = url.searchParams.get('siteId')
+  const anySite = url.searchParams.get('anySite') === 'true'
+  const siteIdToUse = siteIdOverride ?? frontendDomain ?? hostHeader
+  const content = anySite ? await sdk.getContentByPath({ path: paths }) : await sdk.getContentByPath({ path: paths, siteId: siteIdToUse })
       const items = content?.content?.items ?? []
       const metadata = Array.isArray(items) ? items.map((it: any) => ({ key: it?._metadata?.key ?? null, displayName: it?._metadata?.displayName ?? null, url: it?._metadata?.url ?? null })) : []
-      return NextResponse.json({ hostHeader, frontendDomain, appIdentifiers, path: paths, siteIdUsed: siteIdToUse, items: metadata })
+  return NextResponse.json({ hostHeader, frontendDomain, appIdentifiers, path: paths, siteIdUsed: siteIdToUse, anySite: anySite, items: metadata })
     }
 
     return NextResponse.json({ hostHeader, frontendDomain, appIdentifiers })
