@@ -69,6 +69,20 @@ export default function RootLayout({ children }: RootLayoutProps) {
   });
   const ctx = new ServerContext({ locale, factory, client })
 
+  // DEBUG: log environment domain and client siteInfo so we can verify what host is being used
+  try {
+  // eslint-disable-next-line no-console
+  console.log('DEBUG [RootLayout] NEXT_PUBLIC_SITE_DOMAIN:', (globalThis as any).process?.env?.NEXT_PUBLIC_SITE_DOMAIN)
+  // eslint-disable-next-line no-console
+  console.log('DEBUG [RootLayout] VERCEL_PROJECT_PRODUCTION_URL:', (globalThis as any).process?.env?.VERCEL_PROJECT_PRODUCTION_URL)
+    // Cast to any for debug-only access
+    // eslint-disable-next-line no-console
+    console.log('DEBUG [RootLayout] client.siteInfo:', JSON.stringify((client as any)?.siteInfo ?? null, null, 2))
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('DEBUG [RootLayout] failed to log site info', e)
+  }
+
   // Allow environment control over whether the WX snippet can be changed by the client
   const forceDisableOverride = EnvTools.readValueAsBoolean("DISABLE_WX_SWITCHER", false);
   
