@@ -33,8 +33,8 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
     // DEBUG: log siteInfo and resolved domain so we can verify multisite mapping
     try {
         // server-side only — safe to log
-    // eslint-disable-next-line no-console
-    console.log('DEBUG [Header] client.siteInfo:', JSON.stringify((currentClient as any)?.siteInfo ?? (currentClient as any), null, 2))
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [Header] client.siteInfo:', JSON.stringify(currentClient?.siteInfo ?? "(not set)", null, 2))
         // eslint-disable-next-line no-console
         console.log('DEBUG [Header] resolved currentDomain:', currentDomain)
 
