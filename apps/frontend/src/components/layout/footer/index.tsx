@@ -21,12 +21,23 @@ export async function SiteFooter({locale, ctx }: SiteFooterProps)
         queryCache: true
     })
     const footerLocale = locale ?? contextLocale
-    const footerData = (await getSdk(graphClient).getFooterData({
-        locale: footerLocale ? localeToGraphLocale(footerLocale) as Locales : Locales.ALL
+    const currentDomain = client?.siteInfo.frontendDomain
+    const footerResult = await getSdk(graphClient).getFooterData({
+        locale: footerLocale ? localeToGraphLocale(footerLocale) as Locales : Locales.ALL,
+        domain: currentDomain
     }).catch((e: { response: { code: string, status: number, system: { message: string, auth: string} }}) => {
         console.error(`❌ [Optimizely Graph] [Error] ${e.response.code} ${e.response.system.message} ${e.response.system.auth}`)
         return undefined
-    }))?.appLayout?.items?.at(0)
+    })
+
+    const footerItems = footerResult?.appLayout?.items ?? []
+    const findMatches = (item: any) => {
+        const ids = item?.appIdentifiers
+        if (!ids) return false
+        if (Array.isArray(ids)) return ids.includes(currentDomain)
+        return ids === currentDomain
+    }
+    const footerData = footerItems.find(findMatches) ?? footerItems.find(item => item && !(item as any).appIdentifiers)
 
     return <footer className="bg-vulcan dark:bg-vulcan-85 text-white py-8 lg:py-16 outer-padding">
         <div className="container mx-auto">
