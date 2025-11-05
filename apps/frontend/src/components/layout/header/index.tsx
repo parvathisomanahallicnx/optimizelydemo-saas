@@ -64,7 +64,7 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
         if (Array.isArray(ids)) return ids.includes(currentDomain)
         return ids === currentDomain
     }
-    const headerData = headerItems.find(findMatches) ?? headerItems.at(0)
+    const headerData = headerItems.find(findMatches) ?? headerItems.find(item => item && !item.appIdentifiers)
 
     return <header>
         <div className="container mx-auto px-4 lg:px-6 py-4 gap-2 flex flex-row justify-between items-stretch lg:flex-wrap 2xl:flex-nowrap">

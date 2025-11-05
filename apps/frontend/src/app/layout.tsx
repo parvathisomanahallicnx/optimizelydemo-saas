@@ -68,6 +68,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
     queryCache: true,
   });
   const ctx = new ServerContext({ locale, factory, client })
+  // server-side debug logging
+  try {
+    // eslint-disable-next-line no-console
+    console.log('DEBUG [RootLayout] client.siteInfo:', JSON.stringify(client?.siteInfo ?? "(not set)", null, 2))
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('DEBUG [RootLayout] failed to log siteInfo', e)
+  }
   // no server-side debug logging in layout
 
   // Allow environment control over whether the WX snippet can be changed by the client
