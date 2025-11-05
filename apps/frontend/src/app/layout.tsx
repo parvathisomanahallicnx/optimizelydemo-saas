@@ -63,13 +63,7 @@ export type RootLayoutProps = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   const locale = "en"
-  const client = createClient(undefined, undefined, {
-    nextJsFetchDirectives: true,
-    cache: true,
-    queryCache: true,
-  });
-  (client as any).siteInfo = { frontendDomain: headers().get('host') || undefined };
-  const ctx = new ServerContext({ locale, factory, client })
+  const ctx = new ServerContext({ locale, factory })
   // no server-side debug logging in layout
 
   // Allow environment control over whether the WX snippet can be changed by the client

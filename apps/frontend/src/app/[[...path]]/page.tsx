@@ -49,7 +49,7 @@ const {
 });
 
 // Configure the Next.JS route handling for the pages
-export const dynamic = "error"; // Throw an error when the [[...path]] route becomes dynamic, as this will seriously hurt site performance
+export const dynamic = "force-dynamic"; // Force dynamic rendering to read the host header for multi-site support. Caching is used to mitigate performance impact.
 export const dynamicParams = true; // Allow new pages to be resolved without rebuilding the site
 export const revalidate = false; // Keep the cache untill manually revalidated using the Webhook
 

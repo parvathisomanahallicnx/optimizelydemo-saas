@@ -2,6 +2,7 @@ import 'server-only'
 import { PopoverGroup } from '@headlessui/react';
 import { type GenericContext, CmsContentArea } from '@remkoj/optimizely-cms-react/rsc';
 import { createClient, localeToGraphLocale } from '@remkoj/optimizely-graph-client';
+import { headers } from 'next/headers'
 import { type Locales, type InputMaybe } from '@/gql/graphql';
 import { getSdk } from "@/gql/client";
 
@@ -20,15 +21,15 @@ export type HeaderProps = {
   
 export default async function SiteHeader({ locale, ctx }: HeaderProps) 
 {
-    const { client, locale: serverLocale = locale } = ctx
-    const currentDomain = client?.siteInfo.frontendDomain
-    const ctxLocale = locale ?? serverLocale
-    const currentLocale = (ctxLocale ? localeToGraphLocale(ctxLocale) : undefined) as InputMaybe<Locales> | undefined
-    const currentClient = client ?? createClient(undefined, undefined, {
+    const { locale: serverLocale = locale } = ctx
+    const currentClient = createClient(undefined, undefined, {
         nextJsFetchDirectives: true,
         cache: true,
         queryCache: true
     });
+    (currentClient as any).siteInfo = { frontendDomain: headers().get('host') || undefined };
+    const currentDomain = currentClient.siteInfo.frontendDomain;
+    const currentLocale = (locale ? localeToGraphLocale(locale) : undefined) as InputMaybe<Locales> | undefined;
 
 
     const headerResult = await getSdk(currentClient).getHeaderData({
@@ -48,7 +49,7 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
         if (Array.isArray(ids)) return ids.includes(currentDomain)
         return ids === currentDomain
     }
-    const headerData = headerItems.find(findMatches) ?? headerItems.find(item => item && !item.appIdentifiers)
+    const headerData = headerItems.find(findMatches) ?? headerItems.find(item => item && !(item as any).appIdentifiers)
 
     return <header>
         <div className="container mx-auto px-4 lg:px-6 py-4 gap-2 flex flex-row justify-between items-stretch lg:flex-wrap 2xl:flex-nowrap">

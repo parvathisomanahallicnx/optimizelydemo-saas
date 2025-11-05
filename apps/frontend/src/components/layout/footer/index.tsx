@@ -3,6 +3,7 @@ import { getSdk } from "@/gql/client";
 import { Locales } from "@gql/graphql"
 import { GenericContext, CmsContentArea, RichText } from "@remkoj/optimizely-cms-react/rsc";
 import { createClient, localeToGraphLocale } from "@remkoj/optimizely-graph-client";
+import { headers } from 'next/headers'
 import Image from 'next/image'
 import CmsLink, { createListKey } from "@shared/cms_link";
 import LanguageSwitcher from "@shared/language_switcher";
@@ -14,14 +15,15 @@ export type SiteFooterProps = {
 
 export async function SiteFooter({locale, ctx }: SiteFooterProps)
 {
-    const { locale: contextLocale, client } = ctx
-    const graphClient = client ?? createClient(undefined, undefined, {
+    const { locale: contextLocale } = ctx
+    const graphClient = createClient(undefined, undefined, {
         nextJsFetchDirectives: true,
         cache: true,
         queryCache: true
-    })
+    });
+    (graphClient as any).siteInfo = { frontendDomain: headers().get('host') || undefined };
     const footerLocale = locale ?? contextLocale
-    const currentDomain = client?.siteInfo.frontendDomain
+    const currentDomain = graphClient.siteInfo.frontendDomain
     const footerResult = await getSdk(graphClient).getFooterData({
         locale: footerLocale ? localeToGraphLocale(footerLocale) as Locales : Locales.ALL,
         domain: currentDomain
