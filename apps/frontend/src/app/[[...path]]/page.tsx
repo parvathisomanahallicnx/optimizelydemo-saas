@@ -18,16 +18,32 @@ const {
      * will revert to many requests in order to load the content.
      */
     getContentByPath: (client, variables) => {
-        const host = headers().get('host');
+        let siteId: string | undefined = undefined;
+        
+        try {
+            const host = headers().get('host');
+            // Build the full domain URL as stored in CMS (with https://)
+            siteId = host ? `https://${host}` : undefined;
+            
+            // eslint-disable-next-line no-console
+            console.log('DEBUG [getContentByPath] host header:', host);
+            // eslint-disable-next-line no-console
+            console.log('DEBUG [getContentByPath] siteId for query:', siteId);
+        } catch (e) {
+            // headers() not available during build/static generation
+            // eslint-disable-next-line no-console
+            console.log('DEBUG [getContentByPath] headers() not available (build time), siteId will be undefined');
+        }
+        
         // eslint-disable-next-line no-console
-        console.log('DEBUG [getContentByPath] host header:', host);
+        console.log('DEBUG [getContentByPath] path:', variables.path);
         // eslint-disable-next-line no-console
-        console.log('DEBUG [getContentByPath] siteId for query:', host || undefined);
+        console.log('DEBUG [getContentByPath] locale:', variables.locale);
         
         return getContentByPath(client, {
             path: variables.path,
             locale: variables.locale,
-            siteId: host || undefined,
+            siteId: siteId,
             changeset: variables.changeset
         } as getContentByPathQueryVariables);
     },
@@ -49,11 +65,31 @@ const {
      * @returns     The Optimizely Graph Client
      */
     client: (_, scope) => {
+        let host: string | null = null;
+        
+        try {
+            host = headers().get('host');
+            // eslint-disable-next-line no-console
+            console.log('DEBUG [client factory] host header:', host);
+        } catch (e) {
+            // headers() not available during build/static generation
+            // eslint-disable-next-line no-console
+            console.log('DEBUG [client factory] headers() not available (build time)');
+        }
+        
         const client = createClient(undefined, undefined, {
             nextJsFetchDirectives: true,
             cache: true,
             queryCache: true,
         })
+        
+        // Set the site domain for multi-site support
+        if (host && (client as any).siteInfo) {
+            (client as any).siteInfo.frontendDomain = host;
+            // eslint-disable-next-line no-console
+            console.log('DEBUG [client factory] Set frontendDomain to:', host);
+        }
+        
         if (scope === 'request' && draftMode().isEnabled) {
             client.updateAuthentication(AuthMode.HMAC)
             client.enablePreview()
