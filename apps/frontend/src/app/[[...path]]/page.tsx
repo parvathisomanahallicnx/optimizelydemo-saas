@@ -2,6 +2,7 @@ import "server-only";
 import { createClient, AuthMode } from "@remkoj/optimizely-graph-client";
 import { createPage } from "@remkoj/optimizely-cms-nextjs/page";
 import { getContentByPath } from "@gql/functions";
+import { type getContentByPathQueryVariables } from "@gql/graphql";
 import { factory } from "@components/factory";
 import { draftMode, headers } from "next/headers";
 
@@ -16,7 +17,20 @@ const {
      * content for the page in one request. When omitted, the default implementation
      * will revert to many requests in order to load the content.
      */
-    getContentByPath: getContentByPath,
+    getContentByPath: (client, variables) => {
+        const host = headers().get('host');
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [getContentByPath] host header:', host);
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [getContentByPath] siteId for query:', host || undefined);
+        
+        return getContentByPath(client, {
+            path: variables.path,
+            locale: variables.locale,
+            siteId: host || undefined,
+            changeset: variables.changeset
+        } as getContentByPathQueryVariables);
+    },
 
     /**
      * The demo site is single language, so we're always defaulting to English.
@@ -27,20 +41,6 @@ const {
      * @returns     The initial locale
      */
     //paramsToLocale: () => "en",
-
-    /**
-     * Derive the site ID from the request host header for multi-site support.
-     * 
-     * @returns     The site ID (domain)
-     */
-    pathToSiteId: () => {
-        const host = headers().get('host');
-        // eslint-disable-next-line no-console
-        console.log('DEBUG [Page] host header:', host);
-        // eslint-disable-next-line no-console
-        console.log('DEBUG [Page] siteId for content query:', host || undefined);
-        return host || undefined;
-    },
 
     /**
      * The factory to use to create the GraphQL Client to fetch data from Optimizely
