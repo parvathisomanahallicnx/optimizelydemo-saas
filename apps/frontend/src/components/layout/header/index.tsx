@@ -30,22 +30,6 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
         queryCache: true
     });
 
-    // DEBUG: log siteInfo and resolved domain so we can verify multisite mapping
-    try {
-        // server-side only — safe to log
-        // eslint-disable-next-line no-console
-        console.log('DEBUG [Header] client.siteInfo:', JSON.stringify(currentClient?.siteInfo ?? "(not set)", null, 2))
-        // eslint-disable-next-line no-console
-        console.log('DEBUG [Header] resolved currentDomain:', currentDomain)
-
-        // DEBUG: log the variables we'll pass to getHeaderData so we can verify what the Graph call will receive
-        const headerQueryVars = { locale: currentLocale, domain: currentDomain }
-        // eslint-disable-next-line no-console
-        console.log('DEBUG [Header] getHeaderData variables:', JSON.stringify(headerQueryVars))
-    } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('DEBUG [Header] failed to log siteInfo', e)
-    }
 
     const headerResult = await getSdk(currentClient).getHeaderData({
         locale: currentLocale,

@@ -11,6 +11,7 @@ import { createClient } from '@remkoj/optimizely-graph-client';
 // Server side components
 import { EnvTools, Scripts, OptimizelyOneGadget } from "@remkoj/optimizely-one-nextjs/server";
 import { ServerContext } from "@remkoj/optimizely-cms-react/rsc";
+import { headers } from 'next/headers'
 
 // Client side trackers
 import { OptimizelyOneProvider, PageActivator } from "@remkoj/optimizely-one-nextjs/client";
@@ -67,15 +68,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
     cache: true,
     queryCache: true,
   });
+  (client as any).siteInfo = { frontendDomain: headers().get('host') || undefined };
   const ctx = new ServerContext({ locale, factory, client })
-  // server-side debug logging
-  try {
-    // eslint-disable-next-line no-console
-    console.log('DEBUG [RootLayout] client.siteInfo:', JSON.stringify(client?.siteInfo ?? "(not set)", null, 2))
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error('DEBUG [RootLayout] failed to log siteInfo', e)
-  }
   // no server-side debug logging in layout
 
   // Allow environment control over whether the WX snippet can be changed by the client
