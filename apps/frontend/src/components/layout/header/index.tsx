@@ -27,9 +27,14 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
         cache: true,
         queryCache: true
     });
-    (currentClient as any).siteInfo = { frontendDomain: headers().get('host') || undefined };
-    const currentDomain = currentClient.siteInfo.frontendDomain;
+    const currentDomain = headers().get('host') || undefined;
     const currentLocale = (locale ? localeToGraphLocale(locale) : undefined) as InputMaybe<Locales> | undefined;
+
+    // DEBUG: log domain for header query
+    // eslint-disable-next-line no-console
+    console.log('DEBUG [Header] host header:', headers().get('host'));
+    // eslint-disable-next-line no-console
+    console.log('DEBUG [Header] domain for query:', currentDomain);
 
 
     const headerResult = await getSdk(currentClient).getHeaderData({

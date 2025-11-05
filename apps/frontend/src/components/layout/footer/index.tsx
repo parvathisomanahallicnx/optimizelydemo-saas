@@ -21,9 +21,14 @@ export async function SiteFooter({locale, ctx }: SiteFooterProps)
         cache: true,
         queryCache: true
     });
-    (graphClient as any).siteInfo = { frontendDomain: headers().get('host') || undefined };
     const footerLocale = locale ?? contextLocale
-    const currentDomain = graphClient.siteInfo.frontendDomain
+    const currentDomain = headers().get('host') || undefined
+
+    // DEBUG: log domain for footer query
+    // eslint-disable-next-line no-console
+    console.log('DEBUG [Footer] host header:', headers().get('host'));
+    // eslint-disable-next-line no-console
+    console.log('DEBUG [Footer] domain for query:', currentDomain);
     const footerResult = await getSdk(graphClient).getFooterData({
         locale: footerLocale ? localeToGraphLocale(footerLocale) as Locales : Locales.ALL,
         domain: currentDomain

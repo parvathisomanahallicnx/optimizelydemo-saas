@@ -3,7 +3,7 @@ import { createClient, AuthMode } from "@remkoj/optimizely-graph-client";
 import { createPage } from "@remkoj/optimizely-cms-nextjs/page";
 import { getContentByPath } from "@gql/functions";
 import { factory } from "@components/factory";
-import { draftMode } from "next/headers";
+import { draftMode, headers } from "next/headers";
 
 // Create the page components and functions
 const {
@@ -27,6 +27,20 @@ const {
      * @returns     The initial locale
      */
     //paramsToLocale: () => "en",
+
+    /**
+     * Derive the site ID from the request host header for multi-site support.
+     * 
+     * @returns     The site ID (domain)
+     */
+    pathToSiteId: () => {
+        const host = headers().get('host');
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [Page] host header:', host);
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [Page] siteId for content query:', host || undefined);
+        return host || undefined;
+    },
 
     /**
      * The factory to use to create the GraphQL Client to fetch data from Optimizely
