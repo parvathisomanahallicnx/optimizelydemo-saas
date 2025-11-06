@@ -1,0 +1,12 @@
+query getHeaderBlocks($locale: [Locales!]) {
+  HeaderBlock: _Content(
+    where: {
+      _metadata: { types: { eq: "HeaderBlock" } }
+    }
+    locale: $locale
+  ) {
+    items {
+      ...HeaderBlockData
+    }
+  }
+}

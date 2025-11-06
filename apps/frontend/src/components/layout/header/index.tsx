@@ -5,6 +5,7 @@ import { createClient, localeToGraphLocale } from '@remkoj/optimizely-graph-clie
 import { headers } from 'next/headers'
 import { type Locales, type InputMaybe } from '@/gql/graphql';
 import { getSdk } from "@/gql/client";
+import { getLinkData } from "@/lib/urls";
 
 import { Logo } from "./partials/_logo";
 import SecondaryMenu from './partials/_secondary-menu';
@@ -56,10 +57,52 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
     }
     const headerData = headerItems.find(findMatches) ?? headerItems.find(item => item && !(item as any).appIdentifiers)
 
-    // For now, use feature flags for logo configuration until HeaderBlock querying is resolved
-    // TODO: Implement HeaderBlock querying when GraphQL schema allows it
-    const logoUrl = undefined // headerBlockData?.site_logo ? getLinkData(headerBlockData.site_logo) : undefined
-    const logoDarkUrl = undefined // headerBlockData?.site_logo_dark ? getLinkData(headerBlockData.site_logo_dark) : undefined
+    // Query HeaderBlock content to get logo configuration
+    let logoUrl: string | undefined = undefined
+    let logoDarkUrl: string | undefined = undefined
+    
+    try {
+        const headerBlockResult = await getSdk(currentClient).getHeaderBlocks({
+            locale: currentLocale
+        }).catch((e: any) => {
+            console.error(`❌ [Optimizely Graph] [HeaderBlock Error]`, e)
+            return undefined
+        })
+
+        // Filter HeaderBlocks by appIdentifiers, same logic as header/footer
+        const headerBlockItems = headerBlockResult?.HeaderBlock?.items ?? []
+        const findHeaderBlockMatch = (item: any) => {
+            const ids = item?.appIdentifiers
+            if (!ids) return false // Skip items without appIdentifiers
+            if (Array.isArray(ids)) return ids.includes(currentDomain)
+            return ids === currentDomain
+        }
+        
+        // Prefer domain-specific HeaderBlock, fallback to one without appIdentifiers (global)
+        const headerBlockData = headerBlockItems.find(findHeaderBlockMatch) ?? 
+                               headerBlockItems.find(item => item && !(item as any).appIdentifiers)
+        
+        if (headerBlockData && (headerBlockData as any).__typename === 'HeaderBlock') {
+            const blockData = headerBlockData as any
+            const logoData = blockData.site_logo ? getLinkData(blockData.site_logo) : undefined
+            const logoDarkData = blockData.site_logo_dark ? getLinkData(blockData.site_logo_dark) : undefined
+            
+            logoUrl = (typeof logoData === 'string' ? logoData : logoData?.default) || undefined
+            logoDarkUrl = (typeof logoDarkData === 'string' ? logoDarkData : logoDarkData?.default) || undefined
+            
+            // eslint-disable-next-line no-console
+            console.log('DEBUG [HeaderBlock] Found:', (headerBlockData as any)._metadata?.displayName)
+            // eslint-disable-next-line no-console
+            console.log('DEBUG [HeaderBlock] Logo URL:', logoUrl)
+            // eslint-disable-next-line no-console
+            console.log('DEBUG [HeaderBlock] Dark Logo URL:', logoDarkUrl)
+        } else {
+            // eslint-disable-next-line no-console
+            console.log('DEBUG [HeaderBlock] No matching HeaderBlock found for domain:', currentDomain)
+        }
+    } catch (error) {
+        console.error('Failed to fetch HeaderBlock:', error)
+    }
 
     return <header>
         <div className="container mx-auto px-4 lg:px-6 py-4 gap-2 flex flex-row justify-between items-stretch lg:flex-wrap 2xl:flex-nowrap">
