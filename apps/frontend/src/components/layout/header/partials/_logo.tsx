@@ -14,9 +14,11 @@ export const Logo: FunctionComponent<LogoProps> = ({
   logoDark,
   ...divProps
 }) => {
+  // Always call useFlag at the top level
+  const flagConfig = useFlag("layout_configuration", { logo });
+  
   // Use CMS-provided logos, fallback to feature flag, then default
-  const logoUrl = logo !== "/assets/moseybank-logo.svg" ? logo : 
-    useFlag("layout_configuration", { logo }).logo;
+  const logoUrl = logo !== "/assets/moseybank-logo.svg" ? logo : flagConfig.logo;
   
   return (
     <Link href="/" className="flex items-center grow-0 shrink-0" {...divProps}>
