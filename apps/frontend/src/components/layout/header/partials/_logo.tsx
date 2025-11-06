@@ -1,5 +1,4 @@
 "use client";
-import { useMemo } from "react"
 import Image from "next/image";
 import Link from "next/link";
 import { type JSX, type FunctionComponent } from "react";
@@ -7,17 +6,18 @@ import useFlag from "@/useFlag";
 
 type LogoProps = JSX.IntrinsicElements["a"] & {
   logo?: string;
+  logoDark?: string;
 };
 
 export const Logo: FunctionComponent<LogoProps> = ({
   logo = "/assets/moseybank-logo.svg",
+  logoDark,
   ...divProps
 }) => {
-  // Create a stable default value that doesn't change every render
-  const defaultValue = useMemo(() => { return { logo, theme_switcher: false } }, [ logo ])
-
-  // Get the logo configuration
-  const { logo: logoUrl } = useFlag("layout_configuration", defaultValue);
+  // Use CMS-provided logos, fallback to feature flag, then default
+  const logoUrl = logo !== "/assets/moseybank-logo.svg" ? logo : 
+    useFlag("layout_configuration", { logo }).logo;
+  
   return (
     <Link href="/" className="flex items-center grow-0 shrink-0" {...divProps}>
       <Image
@@ -26,7 +26,7 @@ export const Logo: FunctionComponent<LogoProps> = ({
         fill
         unoptimized
         priority
-        className="dark:brightness-0	dark:invert !w-auto !h-12 !relative"
+        className="dark:brightness-0 dark:invert !w-auto !h-12 !relative"
       />
     </Link>
   );

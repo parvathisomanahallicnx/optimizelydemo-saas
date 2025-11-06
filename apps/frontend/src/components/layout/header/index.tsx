@@ -5,6 +5,7 @@ import { createClient, localeToGraphLocale } from '@remkoj/optimizely-graph-clie
 import { headers } from 'next/headers'
 import { type Locales, type InputMaybe } from '@/gql/graphql';
 import { getSdk } from "@/gql/client";
+import { getLinkData } from "@/lib/urls";
 
 import { Logo } from "./partials/_logo";
 import SecondaryMenu from './partials/_secondary-menu';
@@ -56,10 +57,15 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
     }
     const headerData = headerItems.find(findMatches) ?? headerItems.find(item => item && !(item as any).appIdentifiers)
 
+    // Extract logo data from HeaderBlock
+    const headerBlock = headerData?.headerBlock
+    const logoUrl = headerBlock?.site_logo ? getLinkData(headerBlock.site_logo) : undefined
+    const logoDarkUrl = headerBlock?.site_logo_dark ? getLinkData(headerBlock.site_logo_dark) : undefined
+
     return <header>
         <div className="container mx-auto px-4 lg:px-6 py-4 gap-2 flex flex-row justify-between items-stretch lg:flex-wrap 2xl:flex-nowrap">
             <Suspense fallback={<Logo />}>
-                <Logo />
+                <Logo logo={logoUrl} logoDark={logoDarkUrl} />
             </Suspense>
             { process.env.NEXT_PUBLIC_DEBUG_HOST === 'true' && <ClientHostDebug /> }
             <CmsContentArea as={ PopoverGroup } className="main-menu hidden 2xl:grow lg:order-last lg:basis-full 2xl:order-none 2xl:basis-auto lg:flex flex-row items-stretch" items={ headerData?.mainMenu } itemWrapper={{ noWrapper: true }} ctx={ ctx }/>
