@@ -6,6 +6,7 @@ import { headers } from 'next/headers'
 import { type Locales, type InputMaybe } from '@/gql/graphql';
 import { getSdk } from "@/gql/client";
 import { getLinkData } from "@/lib/urls";
+import gql from 'graphql-tag';
 
 import { Logo } from "./partials/_logo";
 import SecondaryMenu from './partials/_secondary-menu';
@@ -46,6 +47,35 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
         return undefined
     })
 
+    // Query for HeaderBlock content separately
+    const headerBlockQuery = gql`
+        query getHeaderBlock($domain: String, $locale: [Locales!]) {
+            HeaderBlock(
+                where: {appIdentifiers: {eq: $domain}}
+                locale: $locale
+            ) {
+                items {
+                    _metadata {
+                        key
+                        displayName
+                    }
+                    site_logo { ...ReferenceData }
+                    site_logo_dark { ...ReferenceData }
+                    appIdentifiers
+                }
+            }
+        }
+        ${currentClient.fragments.ReferenceData}
+    `
+
+    const headerBlockResult = await currentClient.request(headerBlockQuery, {
+        domain: currentDomain,
+        locale: currentLocale
+    }).catch((e: any) => {
+        console.error(`❌ [Optimizely Graph] [HeaderBlock Error]`, e)
+        return undefined
+    })
+
     // items may include a global (no appIdentifiers) item and site-specific items.
     // Prefer an item whose appIdentifiers explicitly match the current domain.
     const headerItems = headerResult?.appLayout?.items ?? []
@@ -57,10 +87,19 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
     }
     const headerData = headerItems.find(findMatches) ?? headerItems.find(item => item && !(item as any).appIdentifiers)
 
-    // Extract logo data from HeaderBlock
-    const headerBlock = headerData?.headerBlock
-    const logoUrl = headerBlock?.site_logo ? getLinkData(headerBlock.site_logo) : undefined
-    const logoDarkUrl = headerBlock?.site_logo_dark ? getLinkData(headerBlock.site_logo_dark) : undefined
+    // Extract logo data from HeaderBlock query result
+    const headerBlockItems = headerBlockResult?.HeaderBlock?.items ?? []
+    const findHeaderBlockMatches = (item: any) => {
+        const ids = item?.appIdentifiers
+        if (!ids) return false
+        if (Array.isArray(ids)) return ids.includes(currentDomain)
+        return ids === currentDomain
+    }
+    const headerBlockData = headerBlockItems.find(findHeaderBlockMatches) ?? headerBlockItems.find(item => item && !(item as any).appIdentifiers)
+
+    // Extract logo URLs
+    const logoUrl = headerBlockData?.site_logo ? getLinkData(headerBlockData.site_logo) : undefined
+    const logoDarkUrl = headerBlockData?.site_logo_dark ? getLinkData(headerBlockData.site_logo_dark) : undefined
 
     return <header>
         <div className="container mx-auto px-4 lg:px-6 py-4 gap-2 flex flex-row justify-between items-stretch lg:flex-wrap 2xl:flex-nowrap">
