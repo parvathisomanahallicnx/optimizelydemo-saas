@@ -57,51 +57,28 @@ export default async function SiteHeader({ locale, ctx }: HeaderProps)
     }
     const headerData = headerItems.find(findMatches) ?? headerItems.find(item => item && !(item as any).appIdentifiers)
 
-    // Query HeaderBlock content to get logo configuration
+    // Get logo configuration from headerBlock reference in LayoutSettingsBlock
     let logoUrl: string | undefined = undefined
     let logoDarkUrl: string | undefined = undefined
     
-    try {
-        const headerBlockResult = await getSdk(currentClient).getHeaderBlocks({
-            locale: currentLocale
-        }).catch((e: any) => {
-            console.error(`❌ [Optimizely Graph] [HeaderBlock Error]`, e)
-            return undefined
-        })
-
-        // Filter HeaderBlocks by appIdentifiers, same logic as header/footer
-        const headerBlockItems = headerBlockResult?.HeaderBlock?.items ?? []
-        const findHeaderBlockMatch = (item: any) => {
-            const ids = item?.appIdentifiers
-            if (!ids) return false // Skip items without appIdentifiers
-            if (Array.isArray(ids)) return ids.includes(currentDomain)
-            return ids === currentDomain
-        }
+    const headerBlockData = (headerData as any)?.headerBlock
+    
+    if (headerBlockData) {
+        const logoData = headerBlockData.site_logo ? getLinkData(headerBlockData.site_logo) : undefined
+        const logoDarkData = headerBlockData.site_logo_dark ? getLinkData(headerBlockData.site_logo_dark) : undefined
         
-        // Prefer domain-specific HeaderBlock, fallback to one without appIdentifiers (global)
-        const headerBlockData = headerBlockItems.find(findHeaderBlockMatch) ?? 
-                               headerBlockItems.find(item => item && !(item as any).appIdentifiers)
+        logoUrl = (typeof logoData === 'string' ? logoData : logoData?.default) || undefined
+        logoDarkUrl = (typeof logoDarkData === 'string' ? logoDarkData : logoDarkData?.default) || undefined
         
-        if (headerBlockData && (headerBlockData as any).__typename === 'HeaderBlock') {
-            const blockData = headerBlockData as any
-            const logoData = blockData.site_logo ? getLinkData(blockData.site_logo) : undefined
-            const logoDarkData = blockData.site_logo_dark ? getLinkData(blockData.site_logo_dark) : undefined
-            
-            logoUrl = (typeof logoData === 'string' ? logoData : logoData?.default) || undefined
-            logoDarkUrl = (typeof logoDarkData === 'string' ? logoDarkData : logoDarkData?.default) || undefined
-            
-            // eslint-disable-next-line no-console
-            console.log('DEBUG [HeaderBlock] Found:', (headerBlockData as any)._metadata?.displayName)
-            // eslint-disable-next-line no-console
-            console.log('DEBUG [HeaderBlock] Logo URL:', logoUrl)
-            // eslint-disable-next-line no-console
-            console.log('DEBUG [HeaderBlock] Dark Logo URL:', logoDarkUrl)
-        } else {
-            // eslint-disable-next-line no-console
-            console.log('DEBUG [HeaderBlock] No matching HeaderBlock found for domain:', currentDomain)
-        }
-    } catch (error) {
-        console.error('Failed to fetch HeaderBlock:', error)
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [HeaderBlock] Found via LayoutSettingsBlock:', headerBlockData._metadata?.displayName)
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [HeaderBlock] Logo URL:', logoUrl)
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [HeaderBlock] Dark Logo URL:', logoDarkUrl)
+    } else {
+        // eslint-disable-next-line no-console
+        console.log('DEBUG [HeaderBlock] No headerBlock reference in LayoutSettingsBlock for domain:', currentDomain)
     }
 
     return <header>

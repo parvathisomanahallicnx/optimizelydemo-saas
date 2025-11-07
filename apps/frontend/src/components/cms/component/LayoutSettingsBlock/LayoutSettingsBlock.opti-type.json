@@ -122,6 +122,20 @@
       "sortOrder": 999,
       "indexingType": "queryable",
       "editorSettings": {}
+    },
+    "headerBlock": {
+      "type": "contentReference",
+      "displayName": "Header Configuration",
+      "description": "Reference to HeaderBlock for logo configuration",
+      "localized": false,
+      "required": false,
+      "group": "header",
+      "sortOrder": 5,
+      "allowedTypes": [
+        "HeaderBlock"
+      ],
+      "restrictedTypes": [],
+      "editorSettings": {}
     }
   }
 }

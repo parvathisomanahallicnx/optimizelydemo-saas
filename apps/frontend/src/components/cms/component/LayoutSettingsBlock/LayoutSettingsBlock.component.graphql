@@ -7,4 +7,8 @@ fragment LayoutSettingsBlockData on LayoutSettingsBlock {
   copyright
   legalLinks { ...LinkItemData }
   appIdentifiers
+  # headerBlock will be available after CMS schema sync
+  # headerBlock {
+  #   ...HeaderBlockData
+  # }
 }
